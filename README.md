@@ -43,7 +43,7 @@ I got into code through games, and games taught me everything: math, physics, re
 |---|---------|-----------|------|
 | 01 | [**Solar Sim 3D**](https://github.com/cyveron5214/solar-sim-3d) | 3D solar system with real orbital mechanics, Kepler's laws, time scaling & camera controls | JS |
 | 02 | [**Comet Runner 2D**](https://github.com/cyveron5214/Comet-runner-2d) | Fast-paced space arcade — obstacles, energy orbs, particle effects, procedural difficulty | JS |
-| 03 | [**Portfolio Site**](https://github.com/cyveron5214/portfolio_cy.html) | This portfolio — custom cursor, scroll animations, terminal UI. Pure HTML/CSS/JS | HTML |
+| 03 | [**Portfolio Site**](https://github.com/cyveron5214/cyveron5214) | This portfolio — custom cursor, scroll animations, terminal UI. Pure HTML/CSS/JS | HTML |
 
 ---
 
@@ -91,6 +91,6 @@ I got into code through games, and games taught me everything: math, physics, re
 
 *⭐ If something I built looks cool or helped you, drop a star — it means a lot.*
 
-[**Portfolio →**](https://cyveron5214.github.io/my-website)&nbsp;&nbsp;·&nbsp;&nbsp;[**Repos →**](https://github.com/cyveron5214?tab=repositories)
+[**Portfolio →**](https://cyveron5214.github.io/cyveron5214)&nbsp;&nbsp;·&nbsp;&nbsp;[**Repos →**](https://github.com/cyveron5214?tab=repositories)
 
 </div>
