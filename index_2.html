@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyveron — Dev Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080810;
+    --bg2: #0f0f1a;
+    --bg3: #16162a;
+    --border: rgba(255,255,255,0.06);
+    --border-hi: rgba(255,255,255,0.14);
+    --accent: #7cffd4;
+    --accent2: #ff6b6b;
+    --accent3: #ffd166;
+    --accent4: #a78bfa;
+    --text: #e2e2f0;
+    --muted: #5a5a78;
+    --muted2: #8888aa;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); overflow-x: hidden; cursor: none; }
+
+  .cursor { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width .18s, height .18s, background .2s; mix-blend-mode: difference; }
+  .cursor-ring { width: 34px; height: 34px; border: 1px solid var(--accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: left .1s ease-out, top .1s ease-out, width .2s, height .2s, opacity .2s; opacity: 0.35; }
+
+  /* bg grid */
+  body::after { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(124,255,212,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(124,255,212,.025) 1px, transparent 1px); background-size: 64px 64px; pointer-events: none; z-index: 0; }
+
+  /* scanline */
+  body::before { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.04) 2px, rgba(0,0,0,.04) 4px); pointer-events: none; z-index: 1; }
+
+  /* glowing orbs */
+  .orb { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+  .orb1 { width: 500px; height: 500px; background: rgba(124,255,212,.055); top: -100px; right: -100px; }
+  .orb2 { width: 400px; height: 400px; background: rgba(167,139,250,.045); bottom: 10%; left: -80px; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.1rem 3rem; display: flex; justify-content: space-between; align-items: center; background: rgba(8,8,16,.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+  .nav-logo { font-family: var(--mono); font-size: .82rem; color: var(--accent); letter-spacing: .05em; }
+  .nav-logo span { color: var(--muted); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-family: var(--mono); font-size: .72rem; color: var(--muted2); text-decoration: none; letter-spacing: .1em; text-transform: uppercase; transition: color .2s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-status { display: flex; align-items: center; gap: .5rem; font-family: var(--mono); font-size: .68rem; color: var(--muted); }
+  .dot-live { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.75)} }
+
+  section { position: relative; z-index: 2; }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 8rem 3rem 4rem; max-width: 1140px; margin: 0 auto; }
+  .hero-eyebrow { font-family: var(--mono); font-size: .72rem; color: var(--accent); letter-spacing: .18em; text-transform: uppercase; margin-bottom: 1.6rem; opacity: 0; animation: fadeUp .6s .2s forwards; }
+  .hero-eyebrow::before { content: '> '; color: var(--muted); }
+  .hero-name { font-size: clamp(3.8rem,9.5vw,7.5rem); font-weight: 800; line-height: .9; letter-spacing: -.04em; margin-bottom: 1.8rem; opacity: 0; animation: fadeUp .6s .35s forwards; }
+  .hero-name .line2 { color: var(--accent); display: block; }
+  .hero-name .line3 { color: var(--muted); display: block; font-size: clamp(2rem,5vw,4rem); font-weight: 400; font-style: italic; letter-spacing: -.01em; margin-top: .3rem; font-family: var(--mono); }
+  .hero-bio { font-family: var(--mono); font-size: .88rem; color: var(--muted2); line-height: 1.9; max-width: 560px; margin-bottom: 2.5rem; opacity: 0; animation: fadeUp .6s .5s forwards; }
+  .hero-bio strong { color: var(--text); font-weight: 400; }
+  .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; animation: fadeUp .6s .65s forwards; margin-bottom: 4rem; }
+  .btn { display: inline-flex; align-items: center; gap: .5rem; font-family: var(--mono); font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; padding: .75rem 1.5rem; border-radius: 3px; transition: all .2s; cursor: none; }
+  .btn-primary { background: var(--accent); color: #000; border: 1px solid var(--accent); font-weight: 700; }
+  .btn-primary:hover { background: transparent; color: var(--accent); }
+  .btn-ghost { background: transparent; color: var(--muted2); border: 1px solid var(--border-hi); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* terminal block */
+  .terminal { background: var(--bg2); border: 1px solid var(--border-hi); border-radius: 6px; padding: 1.2rem 1.5rem; max-width: 480px; opacity: 0; animation: fadeUp .6s .8s forwards; font-family: var(--mono); font-size: .78rem; }
+  .terminal-bar { display: flex; gap: .45rem; margin-bottom: .9rem; }
+  .tbar { width: 10px; height: 10px; border-radius: 50%; }
+  .tbar-r { background: #ff5f56; } .tbar-y { background: #ffbd2e; } .tbar-g { background: #27c93f; }
+  .t-line { color: var(--muted2); line-height: 1.8; }
+  .t-line .k { color: var(--accent4); }
+  .t-line .v { color: var(--accent3); }
+  .t-line .s { color: var(--accent); }
+  .t-line .c { color: var(--muted); font-style: italic; }
+  .t-cursor { display: inline-block; width: 8px; height: 14px; background: var(--accent); animation: blink .9s infinite; vertical-align: middle; }
+  @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+  .hero-scroll { font-family: var(--mono); font-size: .66rem; color: var(--muted); letter-spacing: .15em; text-transform: uppercase; display: flex; align-items: center; gap: .75rem; opacity: 0; animation: fadeUp .6s 1.1s forwards; margin-top: 2rem; }
+  .hero-scroll::before { content: ''; display: block; width: 36px; height: 1px; background: var(--muted); }
+
+  /* stat pills */
+  .stat-row { padding: 0 3rem; max-width: 1140px; margin: 0 auto 5rem; display: flex; gap: 1px; flex-wrap: wrap; background: var(--border); border: 1px solid var(--border); }
+  .stat-pill { flex: 1; min-width: 120px; background: var(--bg); padding: .9rem 1.2rem; font-family: var(--mono); font-size: .68rem; color: var(--muted2); letter-spacing: .05em; text-align: center; transition: background .2s, color .2s; }
+  .stat-pill:hover { background: var(--bg2); color: var(--accent); }
+  .stat-pill strong { display: block; font-size: 1.2rem; color: var(--text); margin-bottom: .2rem; letter-spacing: -.02em; font-family: var(--sans); font-weight: 700; }
+
+  /* SECTION COMMON */
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 5rem 3rem; }
+  .sec-label { font-family: var(--mono); font-size: .68rem; color: var(--accent); letter-spacing: .2em; text-transform: uppercase; margin-bottom: .6rem; }
+  .sec-title { font-size: clamp(1.7rem,3.5vw,2.6rem); font-weight: 700; letter-spacing: -.025em; margin-bottom: .75rem; }
+  .sec-sub { font-family: var(--mono); font-size: .8rem; color: var(--muted2); line-height: 1.8; margin-bottom: 3rem; max-width: 560px; }
+  hr.divider { border: none; border-top: 1px solid var(--border); max-width: 1140px; margin: 0 auto; }
+
+  /* PROJECTS */
+  .proj-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .proj-card { background: var(--bg); padding: 2rem; position: relative; overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: background .25s; cursor: none; }
+  .proj-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(124,255,212,.05), transparent 55%); opacity: 0; transition: opacity .3s; }
+  .proj-card:hover { background: var(--bg2); }
+  .proj-card:hover::after { opacity: 1; }
+  .proj-card.featured { grid-column: span 2; }
+  .proj-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+  .proj-num { font-family: var(--mono); font-size: .62rem; color: var(--muted); letter-spacing: .15em; }
+  .proj-badges { display: flex; gap: .4rem; flex-wrap: wrap; }
+  .badge { font-family: var(--mono); font-size: .62rem; padding: .18rem .55rem; border-radius: 2px; letter-spacing: .05em; }
+  .b-js  { background: rgba(255,209,102,.1); color: var(--accent3); border: 1px solid rgba(255,209,102,.2); }
+  .b-html{ background: rgba(255,107,107,.1); color: var(--accent2); border: 1px solid rgba(255,107,107,.2); }
+  .b-wip { background: rgba(167,139,250,.1); color: var(--accent4); border: 1px solid rgba(167,139,250,.2); }
+  .b-hot { background: rgba(124,255,212,.1); color: var(--accent); border: 1px solid rgba(124,255,212,.2); }
+  .proj-title { font-size: 1.2rem; font-weight: 700; letter-spacing: -.015em; margin-bottom: .6rem; }
+  .proj-card.featured .proj-title { font-size: 1.5rem; }
+  .proj-desc { font-family: var(--mono); font-size: .76rem; color: var(--muted2); line-height: 1.8; flex: 1; margin-bottom: 1.4rem; }
+  .proj-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: 1.4rem; }
+  .tag { font-family: var(--mono); font-size: .62rem; color: var(--muted); border: 1px solid var(--border); padding: .18rem .5rem; border-radius: 2px; }
+  .proj-foot { display: flex; justify-content: space-between; align-items: center; }
+  .proj-link { font-family: var(--mono); font-size: .7rem; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; transition: letter-spacing .2s; }
+  .proj-card:hover .proj-link { letter-spacing: .14em; }
+  .proj-stars { font-family: var(--mono); font-size: .68rem; color: var(--muted); }
+
+  /* ABOUT */
+  .about-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 5rem; align-items: start; }
+  .about-text { font-family: var(--mono); font-size: .82rem; color: var(--muted2); line-height: 1.95; }
+  .about-text p { margin-bottom: 1rem; }
+  .about-text strong { color: var(--text); font-weight: 400; }
+  .about-text .hl { color: var(--accent); }
+
+  .interests { margin-top: 1.5rem; }
+  .interests-title { font-family: var(--mono); font-size: .68rem; color: var(--muted); letter-spacing: .15em; text-transform: uppercase; margin-bottom: .75rem; }
+  .interest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .interest-item { background: var(--bg); padding: .75rem 1rem; font-family: var(--mono); font-size: .72rem; color: var(--muted2); display: flex; align-items: center; gap: .5rem; transition: background .2s, color .2s; }
+  .interest-item:hover { background: var(--bg2); color: var(--text); }
+  .interest-icon { font-size: .9rem; }
+
+  /* skills */
+  .skill-section { margin-top: 0; }
+  .skill-cat { margin-bottom: 1.5rem; }
+  .skill-cat-title { font-family: var(--mono); font-size: .65rem; color: var(--muted); letter-spacing: .15em; text-transform: uppercase; margin-bottom: .6rem; }
+  .skill-list { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .skill-chip { font-family: var(--mono); font-size: .72rem; padding: .35rem .75rem; border: 1px solid var(--border-hi); border-radius: 2px; color: var(--muted2); transition: all .2s; }
+  .skill-chip:hover { border-color: var(--accent); color: var(--accent); background: rgba(124,255,212,.05); }
+
+  /* PHILOSOPHY */
+  .philosophy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .phil-card { background: var(--bg); padding: 1.8rem; transition: background .2s; }
+  .phil-card:hover { background: var(--bg2); }
+  .phil-num { font-family: var(--mono); font-size: .62rem; color: var(--accent); letter-spacing: .15em; margin-bottom: .75rem; }
+  .phil-title { font-size: 1rem; font-weight: 700; margin-bottom: .5rem; letter-spacing: -.01em; }
+  .phil-text { font-family: var(--mono); font-size: .74rem; color: var(--muted2); line-height: 1.75; }
+
+  /* CONTACT */
+  .contact-block { background: var(--bg2); border: 1px solid var(--border-hi); border-radius: 4px; padding: 3rem; text-align: center; }
+  .contact-block h3 { font-size: 1.6rem; font-weight: 700; margin-bottom: .75rem; letter-spacing: -.02em; }
+  .contact-block p { font-family: var(--mono); font-size: .8rem; color: var(--muted2); line-height: 1.8; margin-bottom: 2rem; max-width: 420px; margin-left: auto; margin-right: auto; }
+  .contact-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--border); padding: 2rem 3rem; max-width: 1140px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; position: relative; z-index: 2; }
+  .footer-copy { font-family: var(--mono); font-size: .68rem; color: var(--muted); letter-spacing: .06em; }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { font-family: var(--mono); font-size: .68rem; color: var(--muted); text-decoration: none; letter-spacing: .08em; text-transform: uppercase; transition: color .2s; }
+  .footer-links a:hover { color: var(--accent); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links, .nav-status { display: none; }
+    .hero, .wrap, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .stat-row { padding: 0 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .proj-card.featured { grid-column: span 1; }
+  }
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <div class="nav-logo"><span>~/</span>cyveron</div>
+  <ul class="nav-links">
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#philosophy">Philosophy</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-status"><span class="dot-live"></span> open to collabs</div>
+</nav>
+
+<!-- HERO -->
+<section>
+<div class="hero">
+  <div class="hero-eyebrow">student · self-taught · building from Asia</div>
+  <h1 class="hero-name">
+    I build
+    <span class="line2">games &amp; sims</span>
+    <span class="line3">// with just code</span>
+  </h1>
+  <p class="hero-bio">
+    Browser-based developer working with <strong>vanilla JS &amp; HTML5 Canvas</strong>.<br>
+    No game engines. No heavy frameworks. Just pure code and curiosity.<br>
+    Obsessed with <strong>space, physics</strong>, and making things feel alive in the browser.
+  </p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">Explore Projects →</a>
+    <a href="https://github.com/cyveron5214" target="_blank" class="btn btn-ghost">GitHub ↗</a>
+  </div>
+  <div class="terminal">
+    <div class="terminal-bar"><div class="tbar tbar-r"></div><div class="tbar tbar-y"></div><div class="tbar tbar-g"></div></div>
+    <div class="t-line"><span class="k">const</span> <span class="s">dev</span> = {</div>
+    <div class="t-line">&nbsp;&nbsp;alias: <span class="v">"cyveron"</span>,</div>
+    <div class="t-line">&nbsp;&nbsp;location: <span class="v">"Asia 🌏"</span>,</div>
+    <div class="t-line">&nbsp;&nbsp;stack: [<span class="v">"JS"</span>, <span class="v">"Canvas"</span>, <span class="v">"CSS"</span>],</div>
+    <div class="t-line">&nbsp;&nbsp;engines: <span class="v">false</span>, <span class="c">// never</span></div>
+    <div class="t-line">&nbsp;&nbsp;learning: <span class="v">true</span>,  <span class="c">// always</span></div>
+    <div class="t-line">}; <span class="t-cursor"></span></div>
+  </div>
+  <div class="hero-scroll">Scroll to explore</div>
+</div>
+</section>
+
+<!-- STATS -->
+<div class="stat-row">
+  <div class="stat-pill"><strong>5+</strong> Public Repos</div>
+  <div class="stat-pill"><strong>2</strong> Games Shipped</div>
+  <div class="stat-pill"><strong>1</strong> 3D Simulation</div>
+  <div class="stat-pill"><strong>∞</strong> Things to Learn</div>
+  <div class="stat-pill"><strong>0</strong> Frameworks Used</div>
+</div>
+
+<hr class="divider">
+
+<!-- PROJECTS -->
+<section id="projects">
+<div class="wrap">
+  <div class="sec-label">01 — Projects</div>
+  <h2 class="sec-title">Things I've shipped</h2>
+  <p class="sec-sub">All built with vanilla JavaScript and no game engines. Every simulation and mechanic coded from scratch.</p>
+
+  <div class="proj-grid">
+    <a class="proj-card featured" href="https://github.com/cyveron5214/solar-sim-3d" target="_blank">
+      <div class="proj-header">
+        <span class="proj-num">001</span>
+        <div class="proj-badges"><span class="badge b-js">JavaScript</span><span class="badge b-hot">Featured</span></div>
+      </div>
+      <div class="proj-title">Solar Sim 3D</div>
+      <div class="proj-desc">
+        Interactive 3D solar system with real orbital mechanics — every planet follows Kepler's laws. Built-in time scaling so you can watch years pass in seconds, plus full dynamic camera controls to fly through the system. No Three.js, no physics library. Pure math and canvas.
+      </div>
+      <div class="proj-tags">
+        <span class="tag">orbital mechanics</span><span class="tag">3d rendering</span><span class="tag">kepler's laws</span><span class="tag">camera system</span><span class="tag">time scaling</span><span class="tag">space</span>
+      </div>
+      <div class="proj-foot">
+        <div class="proj-link">View on GitHub</div>
+        <div class="proj-stars">★ Space sim</div>
+      </div>
+    </a>
+
+    <a class="proj-card" href="https://github.com/cyveron5214/Comet-runner-2d" target="_blank">
+      <div class="proj-header">
+        <span class="proj-num">002</span>
+        <div class="proj-badges"><span class="badge b-js">JavaScript</span><span class="badge b-hot">⭐ Starred</span></div>
+      </div>
+      <div class="proj-title">Comet Runner 2D</div>
+      <div class="proj-desc">
+        Fast-paced space arcade — dodge obstacles, collect glowing energy orbs, survive difficulty that scales over time. Features particle effects, smooth controls, and a progressive level system. First shipped game.
+      </div>
+      <div class="proj-tags">
+        <span class="tag">arcade game</span><span class="tag">particle system</span><span class="tag">canvas</span><span class="tag">collision</span><span class="tag">procedural difficulty</span>
+      </div>
+      <div class="proj-foot">
+        <div class="proj-link">View on GitHub</div>
+        <div class="proj-stars">★ 1</div>
+      </div>
+    </a>
+
+    <a class="proj-card" href="https://github.com/cyveron5214/my-website" target="_blank">
+      <div class="proj-header">
+        <span class="proj-num">003</span>
+        <div class="proj-badges"><span class="badge b-html">HTML</span></div>
+      </div>
+      <div class="proj-title">This Portfolio</div>
+      <div class="proj-desc">
+        Built from scratch — no templates, no site builders. Custom cursor, scroll animations, terminal UI block. The design reflects how I think about code: clean, intentional, minimal dependencies.
+      </div>
+      <div class="proj-tags">
+        <span class="tag">portfolio</span><span class="tag">css animations</span><span class="tag">vanilla js</span><span class="tag">intersection observer</span>
+      </div>
+      <div class="proj-foot">
+        <div class="proj-link">View Source</div>
+      </div>
+    </a>
+  </div>
+</div>
+</section>
+
+<hr class="divider">
+
+<!-- ABOUT -->
+<section id="about">
+<div class="wrap">
+  <div class="about-grid">
+    <div>
+      <div class="sec-label">02 — About</div>
+      <h2 class="sec-title">Who I am</h2>
+      <div class="about-text">
+        <p>I'm a <strong>self-taught developer</strong> from Asia — currently a student who builds things to understand them.</p>
+        <p>I got into code because I wanted to make games. Turns out making games teaches you <strong>physics, math, rendering, systems design</strong> — basically everything interesting about programming.</p>
+        <p>My rule: <span class="hl">no game engines, no heavy frameworks</span>. If I can't build it myself, I don't understand it. That means every collision system, every particle, every orbital calculation is written from scratch.</p>
+        <p>I'm also genuinely curious about <strong>web security and how systems fail</strong>. Understanding how things break is just as important as knowing how to build them.</p>
+        <p>I use <strong>AI as a learning tool</strong> — to explore ideas faster, understand concepts deeper, and push code further than I could alone. But the understanding has to be mine.</p>
+        <p>Right now: student by day, <strong>vibe coder</strong> by night.</p>
+      </div>
+
+      <div class="interests">
+        <div class="interests-title">Interests</div>
+        <div class="interest-grid">
+          <div class="interest-item"><span class="interest-icon">🚀</span> Space &amp; astronomy</div>
+          <div class="interest-item"><span class="interest-icon">🎮</span> Game design theory</div>
+          <div class="interest-item"><span class="interest-icon">🔐</span> Web security</div>
+          <div class="interest-item"><span class="interest-icon">🧮</span> Physics simulation</div>
+          <div class="interest-item"><span class="interest-icon">🎬</span> Cinematic storytelling</div>
+          <div class="interest-item"><span class="interest-icon">🤖</span> AI &amp; how LLMs work</div>
+          <div class="interest-item"><span class="interest-icon">⚡</span> Browser performance</div>
+          <div class="interest-item"><span class="interest-icon">🌌</span> Sci-fi worldbuilding</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill-section">
+      <div class="sec-label" style="margin-bottom:.6rem">Stack</div>
+      <h2 class="sec-title" style="font-size:1.6rem;margin-bottom:2rem">How I build</h2>
+
+      <div class="skill-cat">
+        <div class="skill-cat-title">Core</div>
+        <div class="skill-list">
+          <span class="skill-chip">JavaScript (ES6+)</span>
+          <span class="skill-chip">HTML5 Canvas</span>
+          <span class="skill-chip">CSS3</span>
+          <span class="skill-chip">Vanilla JS</span>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <div class="skill-cat-title">Concepts I implement myself</div>
+        <div class="skill-list">
+          <span class="skill-chip">Physics engines</span>
+          <span class="skill-chip">Particle systems</span>
+          <span class="skill-chip">Collision detection</span>
+          <span class="skill-chip">Orbital mechanics</span>
+          <span class="skill-chip">3D projection</span>
+          <span class="skill-chip">Camera systems</span>
+          <span class="skill-chip">Game loops</span>
+          <span class="skill-chip">Procedural generation</span>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <div class="skill-cat-title">Tools &amp; workflow</div>
+        <div class="skill-list">
+          <span class="skill-chip">Git &amp; GitHub</span>
+          <span class="skill-chip">GitHub Pages</span>
+          <span class="skill-chip">VS Code</span>
+          <span class="skill-chip">Browser DevTools</span>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <div class="skill-cat-title">Exploring</div>
+        <div class="skill-list">
+          <span class="skill-chip">Web security</span>
+          <span class="skill-chip">Three.js</span>
+          <span class="skill-chip">WebGL</span>
+          <span class="skill-chip">Node.js</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="divider">
+
+<!-- PHILOSOPHY -->
+<section id="philosophy">
+<div class="wrap">
+  <div class="sec-label">03 — Philosophy</div>
+  <h2 class="sec-title">How I think about code</h2>
+  <p class="sec-sub">A few principles I've picked up from building things the hard way.</p>
+  <div class="philosophy-grid">
+    <div class="phil-card">
+      <div class="phil-num">// 01</div>
+      <div class="phil-title">No black boxes</div>
+      <div class="phil-text">If I use it, I understand it. No copying physics engines without knowing the math. No animation libraries without knowing what's happening each frame.</div>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">// 02</div>
+      <div class="phil-title">Ship broken, fix fast</div>
+      <div class="phil-text">A working prototype with bugs beats a perfect plan that never ships. Get something on screen, then iterate. Perfection is the enemy of learning.</div>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">// 03</div>
+      <div class="phil-title">Build what excites you</div>
+      <div class="phil-text">Space simulations and arcade games aren't practical projects — they're passion projects. And passion projects teach more than assignments ever do.</div>
+    </div>
+    <div class="phil-card">
+      <div class="phil-num">// 04</div>
+      <div class="phil-title">Curiosity over credentials</div>
+      <div class="phil-text">I'm self-taught. No CS degree, no bootcamp. Just a browser, a text editor, and genuine curiosity about how things work.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="divider">
+
+<!-- CONTACT -->
+<section id="contact">
+<div class="wrap">
+  <div class="sec-label">04 — Contact</div>
+  <div class="contact-block">
+    <h3>Let's build something</h3>
+    <p>I'm always open to collaborations, interesting projects, or just talking about space, games, and code. Find me on GitHub.</p>
+    <div class="contact-links">
+      <a href="https://github.com/cyveron5214" target="_blank" class="btn btn-primary">GitHub Profile</a>
+      <a href="https://github.com/cyveron5214?tab=repositories" target="_blank" class="btn btn-ghost">All Repos ↗</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="footer-copy">© 2026 cyveron5214 · Asia 🌏 · Built with HTML + CSS + JS</div>
+  <div class="footer-links">
+    <a href="#home">Top</a>
+    <a href="https://github.com/cyveron5214" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+<script>
+  const cur = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+  (function animRing(){ rx+=(mx-rx)*.11; ry+=(my-ry)*.11; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(animRing); })();
+  document.querySelectorAll('a,button').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ cur.style.width='18px'; cur.style.height='18px'; ring.style.width='52px'; ring.style.height='52px'; ring.style.opacity='.65'; });
+    el.addEventListener('mouseleave',()=>{ cur.style.width='10px'; cur.style.height='10px'; ring.style.width='34px'; ring.style.height='34px'; ring.style.opacity='.35'; });
+  });
+
+  // scroll reveal
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; } });
+  },{threshold:0.08});
+  document.querySelectorAll('.proj-card,.phil-card,.skill-chip,.interest-item,.stat-pill,.about-text p').forEach((el,i)=>{
+    el.style.opacity='0'; el.style.transform='translateY(20px)';
+    el.style.transition=`opacity .5s ${i*.055}s, transform .5s ${i*.055}s`;
+    obs.observe(el);
+  });
+</script>
+</body>
+</html>
